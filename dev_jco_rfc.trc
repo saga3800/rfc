@@ -1,0 +1,138 @@
+
+**** Error file opened at 20190801 143558 Colombia Time Rel. 3.0.19 (2018-12-03) [721.1120]
+Error:  >Thu Aug 01 14:35:58,537<    RfcException:
+	message: Connect to SAP gateway failed
+Connection parameters: TYPE=A DEST=mySAPSystem ASHOST=172.19.139.35 SYSNR=00 PCS=1
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       partner '172.19.139.35:3300' not reached
+TIME        Thu Aug 01 14:35:58 2019
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -10
+MODULE      nixxi.cpp
+LINE        3289
+DETAIL      NiPConnect2: 172.19.139.35:3300
+SYSTEM CALL connect
+ERRNO       10060
+ERRNO TEXT  WSAETIMEDOUT: Connection timed out
+COUNTER     2
+
+	return code: RFC_FAILURE (1)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+
+**** Error file opened at 20190801 165805 Colombia Time Rel. 3.0.19 (2018-12-03) [721.1120]
+Error:  >Thu Aug 01 16:58:05,261<    >RfcGetException (rc=7) message: No RFC authorization for function module RFC_GET_FUNCTION_INTERFACE.
+<RfcGetException
+
+
+
+**** Error file opened at 20190801 170723 Colombia Time Rel. 3.0.19 (2018-12-03) [721.1120]
+Error:  >Thu Aug 01 17:07:23,568<    RfcException:
+	message: Connect to SAP gateway failed
+Connection parameters: TYPE=A DEST=mySAPSystem ASHOST=172.19.139.35 SYSNR=00 PCS=1
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       partner '172.19.139.35:3300' not reached
+TIME        Thu Aug 01 17:07:23 2019
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -10
+MODULE      nixxi.cpp
+LINE        3289
+DETAIL      NiPConnect2: 172.19.139.35:3300
+SYSTEM CALL connect
+ERRNO       10060
+ERRNO TEXT  WSAETIMEDOUT: Connection timed out
+COUNTER     2
+
+	return code: RFC_FAILURE (1)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+
+**** Error file opened at 20190801 174320 Colombia Time Rel. 3.0.19 (2018-12-03) [721.1120]
+Error:  >Thu Aug 01 17:43:20,445<    RfcException:
+	message: Connect to SAP gateway failed
+Connection parameters: TYPE=A DEST=mySAPSystem ASHOST=172.19.139.35 SYSNR=00 PCS=1
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       partner '172.19.139.35:3300' not reached
+TIME        Thu Aug 01 17:43:20 2019
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -10
+MODULE      nixxi.cpp
+LINE        3289
+DETAIL      NiPConnect2: 172.19.139.35:3300
+SYSTEM CALL connect
+ERRNO       10060
+ERRNO TEXT  WSAETIMEDOUT: Connection timed out
+COUNTER     2
+
+	return code: RFC_FAILURE (1)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+Error:  >Thu Aug 01 17:45:18,320<    RfcException:
+	message: Connect to SAP gateway failed
+Connection parameters: TYPE=A DEST=mySAPSystem ASHOST=172.19.139.35 SYSNR=00 PCS=1
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       partner '172.19.139.35:3300' not reached
+TIME        Thu Aug 01 17:45:18 2019
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -10
+MODULE      nixxi.cpp
+LINE        3289
+DETAIL      NiPConnect2: 172.19.139.35:3300
+SYSTEM CALL connect
+ERRNO       10060
+ERRNO TEXT  WSAETIMEDOUT: Connection timed out
+COUNTER     2
+
+	return code: RFC_FAILURE (1)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+
+**** Error file opened at 20190802 095115 Colombia Time Rel. 3.0.19 (2018-12-03) [721.1120]
+Error: [2] >Fri Aug 02 09:51:15,953<    RfcException raised by system [EQA|AMXQASECC01|00]:
+	message: connection closed without message (CM_NO_DATA_RECEIVED)
+	return code: RFC_CLOSED (6)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+
+**** Error file opened at 20190802 105225 Colombia Time Rel. 3.0.19 (2018-12-03) [721.1120]
+Error: [2] >Fri Aug 02 10:52:25,083<    RfcException raised by system [EQA|AMXQASECC01|00]:
+	message: connection closed without message (CM_NO_DATA_RECEIVED)
+	return code: RFC_CLOSED (6)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+
+**** Error file opened at 20190802 112036 Colombia Time Rel. 3.0.19 (2018-12-03) [721.1120]
+Error:  >Fri Aug 02 11:20:36,928<    >RfcGetException (rc=7) message: No RFC authorization for function module DDIF_FIELDINFO_GET.
+<RfcGetException
+
+
+
+**** Error file opened at 20190802 152839 Colombia Time Rel. 3.0.19 (2018-12-03) [721.1120]
+Error:  >Fri Aug 02 15:28:39,100<    >RfcGetException (rc=7) message: Nombre o clave de acceso incorrectos (repita la entrada al sistema)
+<RfcGetException
+
+
+
+**** Error file opened at 20190802 152941 Colombia Time Rel. 3.0.19 (2018-12-03) [721.1120]
+Error:  >Fri Aug 02 15:29:41,911<    >RfcGetException (rc=7) message: Nombre o clave de acceso incorrectos (repita la entrada al sistema)
+<RfcGetException
+
+
