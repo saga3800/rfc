@@ -19,20 +19,20 @@ labels:
 objects:
 - kind: Service
   apiVersion: v1
-#  metadata:
-#    name: "${NAME}"
-#    annotations:
-#      description: Expone y balancea la carga de los pods de aplicación.
-#  spec:
-#    ports:
-#    - name: #{Template.Port}#-tcp
-#      port: #{Template.Port}#
-#      protocol: TCP
-#      targetPort: #{Template.Port}#
-#    loadBalancerIP:
-#    type: LoadBalancer
-#    selector:
-#      name: "${NAME}"
+  metadata:
+    name: "${NAME}"
+    annotations:
+      description: Expone y balancea la carga de los pods de aplicación.
+  spec:
+    ports:
+    - name: #{Template.Port}#-tcp
+      port: #{Template.Port}#
+      protocol: TCP
+      targetPort: #{Template.Port}#
+    loadBalancerIP:
+    type: LoadBalancer
+    selector:
+      name: "${NAME}"
 - kind: ImageStream
   apiVersion: v1
   metadata:
