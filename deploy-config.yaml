@@ -52,8 +52,8 @@ objects:
     strategy:
       dockerStrategy:
         dockerfilePath: Dockerfile
-        pullSecret:
-          name: "acr"
+        #pullSecret:
+        #  name: "acr"
         env:
         - name: "PORT"
           value: "#{Template.Port}#"
@@ -81,7 +81,7 @@ objects:
         intervalSeconds: 1
         maxSurge: "${MAX_SURGE}"
         maxUnavailable: "${MAX_UNAVAILABLE}"
-        timeoutSeconds: 300
+        timeoutSeconds: 600
         updatePeriodSeconds: 1
     triggers:
     - type: ImageChange
@@ -105,8 +105,6 @@ objects:
         containers:
         - name: ${NAME}
           image: ""
-          command: ["java"]
-          args: ["-jar", "./sap-wrapper-service.jar"]
           ports:
             - containerPort: #{Template.Port}#
               protocol: "TCP"
