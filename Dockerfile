@@ -15,4 +15,4 @@ ADD sap-jco ./sap-jco
 ADD ${JAR_FILE} sap-wrapper-service.jar
 
 # Run the jar file
-ENTRYPOINT ["java","-jar","/home/myuser/sap-wrapper-service.jar"]
+ENTRYPOINT ["java","-jar","/usr/src/app/sap-wrapper-service.jar"]
