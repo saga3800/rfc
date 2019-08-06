@@ -4,9 +4,12 @@ FROM xqdocker/ubuntu-openjdk:8
 # Add Maintainer Info
 LABEL maintainer="victor.h.julio.hoyos@accenture.com"
 
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
 # The application's jar file
 ARG JAR_FILE=target/rfc-wrapper-service-0.0.1-SNAPSHOT.jar
-CMD mkdir sap-jco
+CMD mkdir /usr/src/app/sap-jco
 ADD sap-jco ./sap-jco
 # Add the application's jar to the container
 ADD ${JAR_FILE} sap-wrapper-service.jar
