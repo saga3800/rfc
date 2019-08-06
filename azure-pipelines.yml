@@ -20,7 +20,7 @@ jobs:
       javaHomeOption: 'JDKVersion'
       jdkVersionOption: '1.8'
       jdkArchitectureOption: 'x64'
-      goals: 'package'
+      goals: 'package -DskipTests'
       
   - task: CopyFiles@2
     condition: and(succeeded(), in(variables['Build.SourceBranch'], 'refs/heads/master', 'refs/heads/release', 'refs/heads/develop'))
