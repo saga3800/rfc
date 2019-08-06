@@ -6,3 +6,5 @@ sap:
     user: ${USER}
     password: ${PASSWORD}
     lang: ${LANG}
+server:
+  port: ${PORT}
