@@ -5,6 +5,7 @@ FROM xqdocker/ubuntu-openjdk:8
 LABEL maintainer="victor.h.julio.hoyos@accenture.com"
 
 RUN mkdir -p /usr/src/app
+USER spring
 WORKDIR /usr/src/app
 
 # The application's jar file
