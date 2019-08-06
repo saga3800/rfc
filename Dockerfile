@@ -1,12 +1,14 @@
 # Start with a base image containing Java runtime
 FROM xqdocker/ubuntu-openjdk:8
 
+RUN useradd -ms /bin/bash app
+USER app
 RUN mkdir -p /usr/src/app
-RUN chown -R myuser:myuser /usr/src/app
+RUN chown -R app:app /usr/src/app
 RUN chmod 0600 /usr/src/app/*
 RUN chmod 0700 /usr/src/app
 WORKDIR /usr/src/app
-USER myuser
+
 
 # Add Maintainer Info
 LABEL maintainer="victor.h.julio.hoyos@accenture.com"
