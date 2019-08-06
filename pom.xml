@@ -12,13 +12,14 @@
     <artifactId>rfc-wrapper-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>rfc-wrapper-service</name>
+    <packaging>jar</packaging>
     <description>Demo project for Spring Boot</description>
 
     <properties>
         <java.version>1.8</java.version>
         <spring-cloud.version>Greenwich.SR2</spring-cloud.version>
-        <sapjco3-version>3.0.11</sapjco3-version>
-        <sapidoc3-version>3.0.10</sapidoc3-version>
+        <sapjco3-version>3.0.19</sapjco3-version>
+        <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
     </properties>
 
     <dependencies>
@@ -59,6 +60,17 @@
             <scope>system</scope>
             <systemPath>${basedir}/src/main/resources/lib/sapjco3.jar</systemPath>
         </dependency>
+        <!--<dependency>
+            <groupId>com.sap.conn.jco</groupId>
+            <artifactId>com.sap.conn.jco.sapjco3</artifactId>
+            <version>3.0.14</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sap.conn.jco</groupId>
+            <artifactId>libsapjco3</artifactId>
+            <version>3.0.14</version>
+            <type>so</type>
+        </dependency>-->
     </dependencies>
     <dependencyManagement>
         <dependencies>
@@ -74,11 +86,112 @@
 
     <build>
         <plugins>
+           <!-- <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.sap.conn.jco</groupId>
+                                    <artifactId>sapjco3</artifactId>
+                                    <version>${sapjco3-version}</version>
+                                    <type>jar</type>
+                                    <outputDirectory>${project.build.directory}/libs</outputDirectory>
+                                    <destFileName>sapjco3.jar</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${project.build.directory}/libs</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${maven-jar-plugin.version}</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>libs/</classpathPrefix>
+                            <mainClass>com.claro.sap.rfcwrapper.Application</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>-->
+           <!-- <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Class-Path>sap-jco/sapjco3.jar</Class-Path>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.claro.sap.rfcwrapper.Application</mainClass>
+                    <excludeGroupIds>com.sap</excludeGroupIds>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack-dependencies-package</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <excludeTransitive>true</excludeTransitive>
+                            <includeGroupIds>com.sap</includeGroupIds>
+                            <excludeArtifactIds>sap-jco-api</excludeArtifactIds>
+                            <excludes>META-INF/**</excludes>
+                            <outputDirectory>${project.build.directory}/sap-jco</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+           <!-- <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>-->
         </plugins>
     </build>
+    <repositories>
+        <repository>
+            <id>mit</id>
+            <url>http://maven.mit.edu/nexus/content/repositories/public/</url>
+        </repository>
+    </repositories>
+
 
 </project>
