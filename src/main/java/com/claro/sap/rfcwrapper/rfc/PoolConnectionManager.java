@@ -39,7 +39,6 @@ public class PoolConnectionManager {
 
   @PostConstruct
 
-  @Profile("dev")
   public void init() {
     Properties connectProperties = new Properties();
     connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, this.host);
