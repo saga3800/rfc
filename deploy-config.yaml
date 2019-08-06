@@ -29,8 +29,6 @@ objects:
       port: #{Template.Port}#
       protocol: TCP
       targetPort: #{Template.Port}#
-    loadBalancerIP:
-    type: LoadBalancer
     selector:
       name: "${NAME}"
 - kind: ImageStream
