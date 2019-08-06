@@ -105,6 +105,8 @@ objects:
         containers:
         - name: ${NAME}
           image: ""
+          command: ["java"]
+          args: ["-jar", "./sap-wrapper-service.jar"]
           ports:
             - containerPort: #{Template.Port}#
               protocol: "TCP"
