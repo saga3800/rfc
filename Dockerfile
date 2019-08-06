@@ -1,6 +1,7 @@
 # Start with a base image containing Java runtime
 FROM xqdocker/ubuntu-openjdk:8
 
+WORKDIR /usr/src/app/
 # Add Maintainer Info
 LABEL maintainer="victor.h.julio.hoyos@accenture.com"
 
