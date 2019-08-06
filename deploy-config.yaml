@@ -121,10 +121,22 @@ objects:
             value: "#{Template.Port}#"
           - name: "LOGS"
             value: "${LOGS}"
-          - name: USER
+          - name: "CLIENT"
+            value: "#{Template.Client}#"
+          - name: "SYSNR"
+            value: "#{Template.Sysnr}#"
+          - name: "SPRING_PROFILES_ACTIVE"
+            value: "${SPRING_PROFILES_ACTIVE}"
+          - name: "HOST"
+            value: "${HOST}"
+          - name: "USER"
+            value: "${USER}"
+          - name: "LANG"
+            value: "${LANG}"
+          - name: PASSWORD
             valueFrom:
               secretKeyRef:
-                key: SECRET_USER
+                key: SECRET_PASSWORD
                 name: secret-${NAME}
 - apiVersion: autoscaling/v1
   kind: HorizontalPodAutoscaler
@@ -144,7 +156,7 @@ objects:
   metadata:
     name: secret-${NAME}
   stringData:
-    SECRET_USER: #{Template.User}#
+    SECRET_PASSWORD: #{Template.Password}#
 
 parameters:
 - name: NAME
@@ -206,3 +218,19 @@ parameters:
   displayName: logs
   description: logs.
   value: "#{Template.Logs}#"
+- name: SPRING_PROFILES_ACTIVE
+  displayName: Spring profiles active
+  description: Spring profiles active.
+  value: #{Template.SpringProfilesActive}#
+- name: HOST
+  displayName: Host
+  description: Host.
+  value: #{Template.Host}#
+- name: USER
+  displayName: User
+  description: User.
+  value: #{Template.User}#
+- name: LANG
+  displayName: Lang
+  description: Lang.
+  value: #{Template.Lang}#
