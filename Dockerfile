@@ -1,13 +1,26 @@
 # Start with a base image containing Java runtime
 FROM xqdocker/ubuntu-openjdk:8
 
-RUN useradd -ms /bin/bash app
-USER app
 RUN mkdir -p /usr/src/app
-RUN chown -R app:app /usr/src/app
-RUN chmod 0600 /usr/src/app/*
-RUN chmod 0700 /usr/src/app
-WORKDIR /usr/src/app
+
+RUN apt-get update && \
+    apt-get -y install sudo
+
+ENV user app
+
+RUN useradd -m -d /usr/src/${user} ${user} && \
+    chown -R ${user} /usr/src/${user} && \
+    adduser ${user} sudo && \
+    echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
+USER ${user}
+
+WORKDIR /usr/src/${user}
+
+RUN sudo apt-get -y install curl && \
+    sudo apt-get -y install lsb-core && \
+    sudo apt-get -y install lsb && \
+    sudo apt-get -y upgrade -f
 
 
 # Add Maintainer Info
