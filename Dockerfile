@@ -1,6 +1,5 @@
 # Start with a base image containing Java runtime
-#FROM xqdocker/ubuntu-openjdk:8
-FROM openjdk:8-jdk-alpine
+FROM xqdocker/ubuntu-openjdk:8¡
 
 # Add Maintainer Info
 LABEL maintainer="victor.h.julio.hoyos@accenture.com"

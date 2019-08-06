@@ -17,8 +17,8 @@ labels:
   template: ${NAME}
   app: ${NAME}
 objects:
-#- kind: Service
-#  apiVersion: v1
+- kind: Service
+  apiVersion: v1
 #  metadata:
 #    name: "${NAME}"
 #    annotations:
