@@ -2,9 +2,11 @@
 FROM xqdocker/ubuntu-openjdk:8
 
 RUN mkdir -p /usr/src/app
-RUN chown app /usr/src/app
-USER app
+RUN chown -R myuser:myuser /usr/src/app
+RUN chmod 0600 /usr/src/app/*
+RUN chmod 0700 /usr/src/app
 WORKDIR /usr/src/app
+USER myuser
 
 # Add Maintainer Info
 LABEL maintainer="victor.h.julio.hoyos@accenture.com"
