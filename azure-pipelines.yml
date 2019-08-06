@@ -44,7 +44,7 @@ jobs:
       rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/'
       includeRootFolder: false
       archiveType: 'tar'
-      archiveFile: '$(Build.ArtifactStagingDirectory)/_ci-ms-rfc-wrapper.tar'
+      archiveFile: '$(Build.ArtifactStagingDirectory)/_ci-ms-rfc-sap.tar'
       tarCompression: none
       replaceExistingArchive: true
 
@@ -53,5 +53,5 @@ jobs:
     displayName: 'Publish Artifact: artifacts'
     inputs:
       ArtifactName: artifacts
-      PathtoPublish: '$(Build.ArtifactStagingDirectory)/_ci-ms-rfc-wrapper.tar'
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)/_ci-ms-rfc-sap.tar'
   
