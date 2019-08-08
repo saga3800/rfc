@@ -1,6 +1,7 @@
 # Start with a base image containing Java runtime
 FROM xqdocker/ubuntu-openjdk:8
 
+WORKDIR /usr/src/app/
 # Add Maintainer Info
 LABEL maintainer="victor.h.julio.hoyos@accenture.com"
 
@@ -12,4 +13,4 @@ ADD sap-jco ./sap-jco
 ADD ${JAR_FILE} sap-wrapper-service.jar
 
 # Run the jar file
-ENTRYPOINT ["java","-jar","/sap-wrapper-service.jar"]
+ENTRYPOINT ["java","-jar","/usr/src/app/sap-wrapper-service.jar"]
