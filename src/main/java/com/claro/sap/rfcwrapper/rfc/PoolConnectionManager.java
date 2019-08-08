@@ -38,18 +38,18 @@ public class PoolConnectionManager {
   private String ABAP_AS = "mySAPSystem";
 
   @PostConstruct
-
-  @Profile("dev")
   public void init() {
-    Properties connectProperties = new Properties();
+    CustomDestinationProvider destinationProvider = new CustomDestinationProvider(host,sysNr,user,client,password,lang);
+    com.sap.conn.jco.ext.Environment.registerDestinationDataProvider( destinationProvider );
+    /*Properties connectProperties = new Properties();
     connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, this.host);
     connectProperties.setProperty(DestinationDataProvider.JCO_SYSNR, this.sysNr);
     connectProperties.setProperty(DestinationDataProvider.JCO_CLIENT, this.client);
     connectProperties.setProperty(DestinationDataProvider.JCO_USER, this.user);
     connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, this.password);
     connectProperties.setProperty(DestinationDataProvider.JCO_LANG, this.lang);
-    connectProperties.setProperty(DestinationDataProvider.JCO_POOL_CAPACITY, "10");
-    createDataFile(ABAP_AS, "jcoDestination", connectProperties);
+    connectProperties.setProperty(DestinationDataProvider.JCO_POOL_CAPACITY, "10");*/
+    //createDataFile(ABAP_AS, "jcoDestination", connectProperties);
   }
 
   /**

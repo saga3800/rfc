@@ -1,0 +1,10 @@
+sap:
+  datasource:
+    sysnr: ${SYSNR}
+    host: ${HOST}
+    client: ${CLIENT}
+    user: ${USER}
+    password: ${PASSWORD}
+    lang: ${LANG}
+server:
+  port: ${PORT}

@@ -1,8 +1,0 @@
-sap:
-  datasource:
-    sysnr: 00
-    host: 172.19.139.35
-    client: 300
-    user: CO_PRUEBAS
-    password: Bogota.16*
-    lang: es

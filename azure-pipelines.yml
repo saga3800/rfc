@@ -1,19 +1,55 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
+# Author:  John Alexander Cruz Castillo
+# Date:    Bogota, 03 de agosto de 2019
 
 trigger:
 - master
+- develop
+- release
 
-pool:
-  vmImage: 'ubuntu-latest'
+jobs:
+- job: 'Continuous_Integration'
+  #pool: 'OCP Ubuntu 1604'
+  pool:
+      #name: 'OCP Ubuntu 1604'
+      vmImage: 'ubuntu-latest'
+  steps:
+  - task: Maven@3
+    inputs:
+      mavenPomFile: 'pom.xml'
+      mavenOptions: '-Xmx3072m'
+      javaHomeOption: 'JDKVersion'
+      jdkVersionOption: '1.8'
+      jdkArchitectureOption: 'x64'
+      goals: 'package -DskipTests'
+      
+  - task: CopyFiles@2
+    condition: and(succeeded(), in(variables['Build.SourceBranch'], 'refs/heads/master', 'refs/heads/release', 'refs/heads/develop'))
+    displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
+    inputs:
+      SourceFolder: '$(build.sourcesdirectory)'
+      TargetFolder: '$(Build.ArtifactStagingDirectory)'
+      Contents: |
+        **
+        !.git/**/*
+        !**.md
+        !**.gitignore
+        !**.yml
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+  - task: ArchiveFiles@2
+    condition: and(succeeded(), in(variables['Build.SourceBranch'], 'refs/heads/master', 'refs/heads/release', 'refs/heads/develop'))
+    displayName: 'Compress: $(Build.ArtifactStagingDirectory)'
+    inputs:
+      rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/'
+      includeRootFolder: false
+      archiveType: 'tar'
+      archiveFile: '$(Build.ArtifactStagingDirectory)/_ci-ms-rfc-sap.tar'
+      tarCompression: none
+      replaceExistingArchive: true
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+  - task: PublishBuildArtifacts@1
+    condition: and(succeeded(), in(variables['Build.SourceBranch'], 'refs/heads/master', 'refs/heads/release', 'refs/heads/develop'))
+    displayName: 'Publish Artifact: artifacts'
+    inputs:
+      ArtifactName: artifacts
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)/_ci-ms-rfc-sap.tar'
+  
