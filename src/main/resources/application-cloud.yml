@@ -8,3 +8,4 @@ sap:
     lang: ${LANG}
 server:
   port: ${PORT}
+hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: ${TIME_OUT}
