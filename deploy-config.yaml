@@ -114,8 +114,8 @@ objects:
               cpu: "${CPU_LIMIT}"
               memory: "${MEMORY_LIMIT}"
             requests: 
-              cpu: "${CPU_REQUEST}"
-              memory: "${MEMORY_REQUEST}"
+              cpu: "${CPU_LIMIT}"
+              memory: "${MEMORY_LIMIT}"
           env: 
           - name: "PORT"
             value: "#{Template.Port}#"
@@ -179,16 +179,6 @@ parameters:
   description: Cantidad máxima de procesador que puede utilizar el contenedor.
   required: true
   value: #{Template.CpuLimit}#
-- name: MEMORY_REQUEST
-  displayName: Memory default
-  description: Cantidad de memoria que utiliza el contenedor.
-  required: true
-  value: #{Template.MemoryRequest}#
-- name: CPU_REQUEST
-  displayName: CPU default
-  description: Cantidad de procesador que utiliza el contenedor.
-  required: true
-  value: #{Template.CpuRequest}#
 - name: MIN_REPLICAS
   displayName: Minimo de Pods
   description: Cantidad minima de pods.
