@@ -133,6 +133,8 @@ objects:
             value: "${USER}"
           - name: "LANG"
             value: "${LANG}"
+          - name: "TIME_OUT"
+            value: "#{Template.TimeOut}#"
           - name: PASSWORD
             valueFrom:
               secretKeyRef:
