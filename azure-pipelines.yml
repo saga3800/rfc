@@ -11,6 +11,13 @@ jobs:
   pool:
       name: 'OCP Ubuntu 1604'
   steps:
+  - task: CmdLine@2
+    inputs:
+      script: |
+        mkdir /builds/
+        mkdir /builds/binaries/externals
+        
+        echo Hello world
   - task: JavaToolInstaller@0
     inputs:
       versionSpec: '8'
@@ -19,6 +26,7 @@ jobs:
       jdkFile: '/builds/openjdk-11.0.2_linux-x64_bin.tar.gz'
       jdkDestinationDirectory: '/builds/binaries/externals'
       cleanDestinationDirectory: true
+
   - task: Maven@3
     inputs:
       mavenPomFile: 'pom.xml'
