@@ -11,6 +11,14 @@ jobs:
   pool:
       name: 'OCP Ubuntu 1604'
   steps:
+  - task: JavaToolInstaller@0
+    inputs:
+      versionSpec: '8'
+      jdkArchitectureOption: 'x64'
+      jdkSourceOption: 'LocalDirectory'
+      jdkFile: '/builds/openjdk-11.0.2_linux-x64_bin.tar.gz'
+      jdkDestinationDirectory: '/builds/binaries/externals'
+      cleanDestinationDirectory: true
   - task: Maven@3
     inputs:
       mavenPomFile: 'pom.xml'
