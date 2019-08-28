@@ -9,24 +9,9 @@ trigger:
 jobs:
 - job: 'Continuous_Integration'
   pool:
-      name: 'OCP Ubuntu 1604'
+      #name: 'OCP Ubuntu 1604'
+      vmImage: ubuntu-latest
   steps:
-  - task: CmdLine@2
-    inputs:
-      script: |
-        mkdir /builds/
-        mkdir /builds/binaries/externals
-        
-        echo Hello world
-  - task: JavaToolInstaller@0
-    inputs:
-      versionSpec: '8'
-      jdkArchitectureOption: 'x64'
-      jdkSourceOption: 'LocalDirectory'
-      jdkFile: '/builds/openjdk-11.0.2_linux-x64_bin.tar.gz'
-      jdkDestinationDirectory: '/builds/binaries/externals'
-      cleanDestinationDirectory: true
-
   - task: Maven@3
     inputs:
       mavenPomFile: 'pom.xml'
