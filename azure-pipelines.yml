@@ -8,10 +8,9 @@ trigger:
 
 jobs:
 - job: 'Continuous_Integration'
-  #pool: 'OCP Ubuntu 1604'
   pool:
       #name: 'OCP Ubuntu 1604'
-      vmImage: 'ubuntu-latest'
+      vmImage: ubuntu-latest
   steps:
   - task: Maven@3
     inputs:
