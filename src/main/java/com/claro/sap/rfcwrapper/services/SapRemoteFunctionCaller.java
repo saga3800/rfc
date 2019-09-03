@@ -102,13 +102,18 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
       tables.forEach(
           jCoField -> {
             if (jCoField.getName().startsWith("EX") && jCoField.getTable().getNumRows() > 0) {
-              JCoFieldIterator tablaDatosIterator = jCoField.getTable().getRecordFieldIterator();
-              Map outputParams = new HashMap();
-              while (tablaDatosIterator.hasNextField()) {
-                JCoField field = tablaDatosIterator.nextField();
-                outputParams.put(field.getName(), field.getValue());
+              JCoTable currentTable = jCoField.getTable();
+
+              while (currentTable.nextRow()) {
+                JCoFieldIterator tablaDatosIterator = currentTable.getRecordFieldIterator();
+                Map outputParams = new HashMap();
+
+                while (tablaDatosIterator.hasNextField()) {
+                  JCoField field = tablaDatosIterator.nextField();
+                  outputParams.put(field.getName(), field.getValue());
+                }
+                template.getOutputParamList().add(outputParams);
               }
-              template.getOutputParamList().add(outputParams);
             }
           });
       // messages output params
