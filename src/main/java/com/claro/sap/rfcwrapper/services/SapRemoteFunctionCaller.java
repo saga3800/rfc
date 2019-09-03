@@ -101,7 +101,7 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
 
       tables.forEach(
           jCoField -> {
-            if (jCoField.getName().startsWith("EX") && jCoField.getTable().getNumRows() > 0) {
+            if (jCoField.getTable().getNumRows() > 0) {
               JCoTable currentTable = jCoField.getTable();
 
               while (currentTable.nextRow()) {

@@ -3,8 +3,8 @@ sap:
     sysnr: 00
     host: 172.19.139.35
     client: 300
-    user: CO_WDIGITAL
-    password: SineR6IA.0008$
+    user: CO_PRUEBAS
+    password: Bogota.16*
     lang: es
 server:
   port: 8090
