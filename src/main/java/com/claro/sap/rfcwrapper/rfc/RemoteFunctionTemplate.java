@@ -15,7 +15,7 @@ public class RemoteFunctionTemplate {
 
   private Map<String, Object> simpleParams = new HashMap<>();
   private Map<String, RemoteFunctionParamList> structures = new HashMap<>();
-  private Map<String, RemoteFunctionParamList> tables = new HashMap<>();
+  private Map<String, ArrayList<Map>> tables = new HashMap<>();
   private List<Map<String, Object>> outputParamList = new ArrayList<>();
   private String functionName;
   private String error;
@@ -25,7 +25,7 @@ public class RemoteFunctionTemplate {
     private String functionName;
     private Map<String, Object> simpleParams = new HashMap<>();
     private Map<String, RemoteFunctionParamList.Builder> structures = new HashMap<>();
-    private Map<String, RemoteFunctionParamList.Builder> tables = new HashMap<>();
+    private Map<String, RemoteFunctionTable.Builder> tables = new HashMap<>();
 
     public Builder function(String name) {
       this.functionName = name;
@@ -43,8 +43,8 @@ public class RemoteFunctionTemplate {
       return builder;
     }
 
-    public RemoteFunctionParamList.Builder table(String name) {
-      RemoteFunctionParamList.Builder builder = new RemoteFunctionParamList.Builder(this);
+    public RemoteFunctionTable.Builder table(String name) {
+      RemoteFunctionTable.Builder builder = new RemoteFunctionTable.Builder(this);
       this.tables.put(name, builder);
       return builder;
     }
@@ -57,9 +57,9 @@ public class RemoteFunctionTemplate {
           this.structures.entrySet().stream()
               .collect(Collectors.toMap(o -> o.getKey(), o -> o.getValue().build()));
       builder.structures = strs;
-      Map<String, RemoteFunctionParamList> tbls =
+      Map<String, ArrayList<Map>> tbls =
           this.tables.entrySet().stream()
-              .collect(Collectors.toMap(o -> o.getKey(), o -> o.getValue().build()));
+              .collect(Collectors.toMap(o -> o.getKey(), o -> o.getValue().build().getRows()));
       builder.tables = tbls;
       return builder;
     }
