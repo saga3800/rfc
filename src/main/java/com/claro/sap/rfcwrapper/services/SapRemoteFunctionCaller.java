@@ -8,6 +8,7 @@ import com.sap.conn.jco.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,15 +63,18 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
           .forEach(
               entry -> {
                 JCoTable table = function.getTableParameterList().getTable(entry.getKey());
-                RemoteFunctionParamList params = entry.getValue();
-                table.appendRow();
-                params
-                    .getParamList()
-                    .entrySet()
-                    .forEach(
-                        dataEntry -> {
-                          table.setValue(dataEntry.getKey(), dataEntry.getValue());
-                        });
+                ArrayList<Map> rows = entry.getValue();
+                rows.forEach(
+                    row -> {
+                      table.appendRow();
+                      row.entrySet()
+                          .forEach(
+                              dataEntry -> {
+                                table.setValue(
+                                    ((Map.Entry) dataEntry).getKey().toString(),
+                                    ((Map.Entry) dataEntry).getValue().toString());
+                              });
+                    });
               });
 
       connectionManager.executeFuction(function);
@@ -97,16 +101,18 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
 
       tables.forEach(
           jCoField -> {
-              if(jCoField.getName().startsWith("EX") && jCoField.getTable().getNumRows() > 0){
-                  JCoFieldIterator tablaDatosIterator = jCoField.getTable().getRecordFieldIterator();
-                  Map outputParams = new HashMap();
-                  while (tablaDatosIterator.hasNextField()) {
-                      JCoField field = tablaDatosIterator.nextField();
-                      outputParams.put(field.getName(), field.getValue());
-                  }
-                  template.getOutputParamList().add(outputParams);
+            if (jCoField.getName().startsWith("EX") && jCoField.getTable().getNumRows() > 0) {
+              for (int i = 0; i < jCoField.getTable().getNumRows(); i++) {
+                JCoFieldIterator tablaDatosIterator = jCoField.getTable().getRecordFieldIterator();
+                Map outputParams = new HashMap();
+                while (tablaDatosIterator.hasNextField()) {
+                  JCoField field = tablaDatosIterator.nextField();
+                  outputParams.put(field.getName(), field.getValue());
+                }
+                template.getOutputParamList().add(outputParams);
+                jCoField.getTable().nextRow();
               }
-
+            }
           });
       // messages output params
       /*

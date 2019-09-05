@@ -211,3 +211,28 @@ COUNTER     2
 	error group: 102
 	key: RFC_ERROR_COMMUNICATION
 
+
+**** Error file opened at 20190902 163732 Colombia Time Rel. 3.0.19 (2018-12-03) [721.1120]
+Error:  >Mon Sep 02 16:37:32,338<    RfcException:
+	message: Connect to SAP gateway failed
+Connection parameters: TYPE=A DEST=mySAPSystem ASHOST=172.19.139.35 SYSNR=00 PCS=1
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       partner '172.19.139.35:3300' not reached
+TIME        Mon Sep 02 16:37:32 2019
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -10
+MODULE      nixxi.cpp
+LINE        3289
+DETAIL      NiPConnect2: 172.19.139.35:3300
+SYSTEM CALL connect
+ERRNO       10060
+ERRNO TEXT  WSAETIMEDOUT: Connection timed out
+COUNTER     2
+
+	return code: RFC_FAILURE (1)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+

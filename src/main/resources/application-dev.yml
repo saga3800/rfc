@@ -6,3 +6,5 @@ sap:
     user: CO_PRUEBAS
     password: Bogota.16*
     lang: es
+server:
+  port: 8090
