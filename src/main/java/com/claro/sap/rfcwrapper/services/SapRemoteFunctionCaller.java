@@ -82,10 +82,12 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
               .entrySet()
               .forEach(stringObjectEntry -> {
                   JCoTable table = function.getImportParameterList().getTable(stringObjectEntry.getKey());
+                  table.appendRow();
                   Map<String, Object> mapProperties = (Map<String, Object>) stringObjectEntry.getValue();
                   mapProperties.entrySet().forEach(stringObjectEntry1 -> {
                       if(stringObjectEntry1.getValue() instanceof Map){
                           JCoTable subTable = table.getTable(stringObjectEntry1.getKey().toString());
+                          subTable.appendRow();
                           Map<String, Object> subTablePropertiesMap = (Map) stringObjectEntry1.getValue();
                           subTablePropertiesMap.entrySet().forEach(stringObjectEntry2 -> {
                               subTable.setValue(stringObjectEntry2.getKey(), stringObjectEntry2.getValue());
