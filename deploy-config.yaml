@@ -144,7 +144,7 @@ objects:
               secretKeyRef:
                 key: SECRET_PASSWORD
                 name: secret-${NAME}
-          args: ["-Dagentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000"]
+          args: ["-Dagentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000"]
 - apiVersion: autoscaling/v1
   kind: HorizontalPodAutoscaler
   metadata:
