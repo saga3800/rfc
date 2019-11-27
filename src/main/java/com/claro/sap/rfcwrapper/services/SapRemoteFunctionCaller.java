@@ -70,6 +70,11 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
                       row.entrySet()
                           .forEach(
                               dataEntry -> {
+                                  //verificar si el atributo es subtabla
+                                  if(((Map.Entry) dataEntry).getValue() instanceof Map){
+                                      JCoTable subTable = table.getTable(((Map.Entry) dataEntry).getKey().toString());
+                                  }
+
                                 table.setValue(
                                     ((Map.Entry) dataEntry).getKey().toString(),
                                     ((Map.Entry) dataEntry).getValue().toString());
