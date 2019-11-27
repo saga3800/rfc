@@ -70,16 +70,31 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
                       row.entrySet()
                           .forEach(
                               dataEntry -> {
-                                  //verificar si el atributo es subtabla
-                                  if(((Map.Entry) dataEntry).getValue() instanceof Map){
-                                      JCoTable subTable = table.getTable(((Map.Entry) dataEntry).getKey().toString());
-                                  }
 
                                 table.setValue(
                                     ((Map.Entry) dataEntry).getKey().toString(),
                                     ((Map.Entry) dataEntry).getValue().toString());
                               });
                     });
+              });
+
+      template.getImportParameterList()
+              .entrySet()
+              .forEach(stringObjectEntry -> {
+                  JCoTable table = function.getImportParameterList().getTable(stringObjectEntry.getKey());
+                  Map<String, Object> mapProperties = (Map<String, Object>) stringObjectEntry.getValue();
+                  mapProperties.entrySet().forEach(stringObjectEntry1 -> {
+                      if(stringObjectEntry1.getValue() instanceof Map){
+                          JCoTable subTable = table.getTable(stringObjectEntry1.getKey().toString());
+                          Map<String, Object> subTablePropertiesMap = (Map) stringObjectEntry1.getValue();
+                          subTablePropertiesMap.entrySet().forEach(stringObjectEntry2 -> {
+                              subTable.setValue(stringObjectEntry2.getKey(), stringObjectEntry2.getValue());
+                          });
+
+                      }else{
+                          table.setValue(stringObjectEntry1.getKey(),stringObjectEntry1.getValue());
+                      }
+                  });
               });
 
       connectionManager.executeFuction(function);
