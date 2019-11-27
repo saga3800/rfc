@@ -109,7 +109,7 @@ objects:
             - containerPort: #{Template.Port}#
               protocol: "TCP"
               name: http
-            - containerPort: 8000
+            - containerPort: 5005
               protocol: "TCP"
               name: debugport
           type: "Recreate"
@@ -144,7 +144,7 @@ objects:
               secretKeyRef:
                 key: SECRET_PASSWORD
                 name: secret-${NAME}
-          args: ["-Dagentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000"]
+
 - apiVersion: autoscaling/v1
   kind: HorizontalPodAutoscaler
   metadata:
