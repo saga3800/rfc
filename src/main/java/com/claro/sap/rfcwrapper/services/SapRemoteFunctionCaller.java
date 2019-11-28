@@ -92,7 +92,7 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
                     .entrySet()
                     .forEach(
                         stringObjectEntry1 -> {
-                          if (stringObjectEntry1.getValue() instanceof Map) {
+                          if (stringObjectEntry1.getValue() instanceof ArrayList) {
                             JCoTable subTable =
                                 table.getTable(stringObjectEntry1.getKey().toString());
 
