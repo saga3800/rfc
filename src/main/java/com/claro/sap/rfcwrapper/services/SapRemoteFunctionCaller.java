@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -70,7 +71,6 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
                       row.entrySet()
                           .forEach(
                               dataEntry -> {
-
                                 table.setValue(
                                     ((Map.Entry) dataEntry).getKey().toString(),
                                     ((Map.Entry) dataEntry).getValue().toString());
@@ -78,25 +78,44 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
                     });
               });
 
-      template.getImportParameterList()
-              .entrySet()
-              .forEach(stringObjectEntry -> {
-                  JCoTable table = function.getImportParameterList().getTable(stringObjectEntry.getKey());
-                  table.appendRow();
-                  Map<String, Object> mapProperties = (Map<String, Object>) stringObjectEntry.getValue();
-                  mapProperties.entrySet().forEach(stringObjectEntry1 -> {
-                      if(stringObjectEntry1.getValue() instanceof Map){
-                          JCoTable subTable = table.getTable(stringObjectEntry1.getKey().toString());
-                          subTable.appendRow();
-                          Map<String, Object> subTablePropertiesMap = (Map) stringObjectEntry1.getValue();
-                          subTablePropertiesMap.entrySet().forEach(stringObjectEntry2 -> {
-                              subTable.setValue(stringObjectEntry2.getKey(), stringObjectEntry2.getValue());
-                          });
+      template
+          .getImportParameterList()
+          .entrySet()
+          .forEach(
+              stringObjectEntry -> {
+                JCoTable table =
+                    function.getImportParameterList().getTable(stringObjectEntry.getKey());
+                table.appendRow();
+                Map<String, Object> mapProperties =
+                    (Map<String, Object>) stringObjectEntry.getValue();
+                mapProperties
+                    .entrySet()
+                    .forEach(
+                        stringObjectEntry1 -> {
+                          if (stringObjectEntry1.getValue() instanceof Map) {
+                            JCoTable subTable =
+                                table.getTable(stringObjectEntry1.getKey().toString());
 
-                      }else{
-                          table.setValue(stringObjectEntry1.getKey(),stringObjectEntry1.getValue());
-                      }
-                  });
+                            List<Map<String, Object>> subTablePropertiesMap =
+                                (List<Map<String, Object>>) stringObjectEntry1.getValue();
+                            subTablePropertiesMap.forEach(
+                                seriales -> {
+                                    subTable.appendRow();
+                                  seriales
+                                      .entrySet()
+                                      .forEach(
+                                          stringObjectEntry2 -> {
+                                            subTable.setValue(
+                                                stringObjectEntry2.getKey(),
+                                                stringObjectEntry2.getValue());
+                                          });
+                                });
+
+                          } else {
+                            table.setValue(
+                                stringObjectEntry1.getKey(), stringObjectEntry1.getValue());
+                          }
+                        });
               });
 
       connectionManager.executeFuction(function);
