@@ -100,7 +100,7 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
                                 (List<Map<String, Object>>) stringObjectEntry1.getValue();
                             subTablePropertiesMap.forEach(
                                 seriales -> {
-                                    subTable.appendRow();
+                                  subTable.appendRow();
                                   seriales
                                       .entrySet()
                                       .forEach(
@@ -132,29 +132,47 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
       Map data = new HashMap();
       while (fieldIterator != null && fieldIterator.hasNextField()) {
         JCoField field = fieldIterator.nextField();
-        if (field.getValue() != null && !field.getValue().toString().isEmpty()) {
-          data.put(field.getName(), field.getValue());
+
+        // validar is es tabla
+        if (field.isTable()) {
+          JCoTable tableField = field.getTable();
+          JCoRecordFieldIterator subIterator = tableField.getRecordFieldIterator();
+          while (subIterator != null && subIterator.hasNextField()) {
+              JCoField subField = subIterator.nextField();
+              if (subField.getValue() != null && !subField.getValue().toString().isEmpty()) {
+                  data.put(subField.getName(), subField.getValue());
+              }
+          }
+
+        } else {
+          if (field.getValue() != null && !field.getValue().toString().isEmpty()) {
+            data.put(field.getName(), field.getValue());
+          }
         }
       }
       if (!data.isEmpty()) {
         template.getOutputParamList().add(data);
       }
 
-      tables.forEach(
-          jCoField -> {
-            if (jCoField.getName().startsWith("EX") && jCoField.getTable().getNumRows() > 0) {
-              for (int i = 0; i < jCoField.getTable().getNumRows(); i++) {
-                JCoFieldIterator tablaDatosIterator = jCoField.getTable().getRecordFieldIterator();
-                Map outputParams = new HashMap();
-                while (tablaDatosIterator.hasNextField()) {
-                  JCoField field = tablaDatosIterator.nextField();
-                  outputParams.put(field.getName(), field.getValue());
+      if (tables != null) {
+        tables.forEach(
+            jCoField -> {
+              if (jCoField.getName().startsWith("EX") && jCoField.getTable().getNumRows() > 0) {
+                for (int i = 0; i < jCoField.getTable().getNumRows(); i++) {
+                  JCoFieldIterator tablaDatosIterator =
+                      jCoField.getTable().getRecordFieldIterator();
+                  Map outputParams = new HashMap();
+                  while (tablaDatosIterator.hasNextField()) {
+                    JCoField field = tablaDatosIterator.nextField();
+                    outputParams.put(field.getName(), field.getValue());
+                  }
+                  template.getOutputParamList().add(outputParams);
+                  jCoField.getTable().nextRow();
                 }
-                template.getOutputParamList().add(outputParams);
-                jCoField.getTable().nextRow();
               }
-            }
-          });
+            });
+      }
+
       // messages output params
       /*
       if (!tablaMsgs.isEmpty()) {
