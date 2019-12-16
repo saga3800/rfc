@@ -198,12 +198,10 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
         template.getOutputParamList().add(data);
       }*/
 
-      return template;
-
     } catch (JCoException e) {
       e.printStackTrace();
-      template.setError(e.getMessageText());
+      template.setError(e.getMessage());
     }
-    return null;
+    return template;
   }
 }

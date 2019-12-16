@@ -5,6 +5,8 @@ import com.claro.sap.rfcwrapper.services.SapRemoteFunctionCaller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +21,11 @@ public class SapFunctionController {
 
     RemoteFunctionTemplate result = remoteFunctionCaller.invoke(template);
     if (result.getError() != null) {
-      return result.getOutputParamList();
+      List<Map<String, Object>> error = new ArrayList<>();
+      Map<String, Object> detail = new HashMap<>();
+      detail.put("Error", result.getError());
+      error.add(detail);
+      return  error;
     } else {
       return result.getOutputParamList();
     }
