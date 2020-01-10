@@ -5,6 +5,8 @@ sap:
     client: 300
     user: CO_PRUEBAS
     password: Bogota.16*
+    #user: CO_WDIGITAL
+    #password: SineR6IA.0008$
     lang: es
 server:
   port: 8090
