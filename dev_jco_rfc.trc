@@ -236,3 +236,107 @@ COUNTER     2
 	error group: 102
 	key: RFC_ERROR_COMMUNICATION
 
+
+**** Error file opened at 20191129 102645 Colombia Time Rel. 3.0.19 (2018-12-03) [721.1120]
+Error:  >Fri Nov 29 10:26:45,618<    >RfcGetException (rc=7) message: No RFC authorization for function module Z02RTPMF_VERIFICA_MAT_FS.
+<RfcGetException
+
+
+
+**** Error file opened at 20191220 153639 Colombia Time Rel. 3.0.19 (2018-12-03) [721.1120]
+Error:  >Fri Dec 20 15:36:39,891<    RfcException:
+	message: Connect to SAP gateway failed
+Connection parameters: TYPE=A DEST=mySAPSystem ASHOST=172.19.139.35 SYSNR=00 PCS=1
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       partner '172.19.139.35:3300' not reached
+TIME        Fri Dec 20 15:36:39 2019
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -10
+MODULE      nixxi.cpp
+LINE        3289
+DETAIL      NiPConnect2: 172.19.139.35:3300
+SYSTEM CALL connect
+ERRNO       10060
+ERRNO TEXT  WSAETIMEDOUT: Connection timed out
+COUNTER     3
+
+	return code: RFC_FAILURE (1)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+
+**** Error file opened at 20191223 151555 Colombia Time Rel. 3.0.19 (2018-12-03) [721.1120]
+Error:  >Mon Dec 23 15:15:55,663<    RfcException:
+	message: Connect to SAP gateway failed
+Connection parameters: TYPE=A DEST=mySAPSystem ASHOST=172.19.139.35 SYSNR=00 PCS=1
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       partner '172.19.139.35:3300' not reached
+TIME        Mon Dec 23 15:15:55 2019
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -10
+MODULE      nixxi.cpp
+LINE        3289
+DETAIL      NiPConnect2: 172.19.139.35:3300
+SYSTEM CALL connect
+ERRNO       10053
+ERRNO TEXT  WSAECONNABORTED: Software caused connection abort
+COUNTER     2
+
+	return code: RFC_FAILURE (1)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+
+**** Error file opened at 20200102 144752 Colombia Time Rel. 3.0.19 (2018-12-03) [721.1120]
+Error:  >Thu Jan 02 14:47:52,393<    RfcException:
+	message: Connect to SAP gateway failed
+Connection parameters: TYPE=A DEST=mySAPSystem ASHOST=172.19.139.35 SYSNR=00 PCS=1
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       partner '172.19.139.35:3300' not reached
+TIME        Thu Jan 02 14:47:52 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -10
+MODULE      nixxi.cpp
+LINE        3289
+DETAIL      NiPConnect2: 172.19.139.35:3300
+SYSTEM CALL connect
+ERRNO       10051
+ERRNO TEXT  WSAENETUNREACH: Network is unreachable
+COUNTER     4
+
+	return code: RFC_FAILURE (1)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+Error:  >Thu Jan 02 15:44:17,077<    RfcException:
+	message: Connect to SAP gateway failed
+Connection parameters: TYPE=A DEST=mySAPSystem ASHOST=172.19.139.35 SYSNR=00 PCS=1
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       partner '172.19.139.35:3300' not reached
+TIME        Thu Jan 02 15:44:17 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -10
+MODULE      nixxi.cpp
+LINE        3289
+DETAIL      NiPConnect2: 172.19.139.35:3300
+SYSTEM CALL connect
+ERRNO       10060
+ERRNO TEXT  WSAETIMEDOUT: Connection timed out
+COUNTER     2
+
+	return code: RFC_FAILURE (1)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
