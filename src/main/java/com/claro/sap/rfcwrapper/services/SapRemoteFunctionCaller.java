@@ -4,7 +4,15 @@ import com.claro.sap.rfcwrapper.rfc.PoolConnectionManager;
 import com.claro.sap.rfcwrapper.rfc.RemoteFunctionCaller;
 import com.claro.sap.rfcwrapper.rfc.RemoteFunctionParamList;
 import com.claro.sap.rfcwrapper.rfc.RemoteFunctionTemplate;
-import com.sap.conn.jco.*;
+import com.sap.conn.jco.JCoException;
+import com.sap.conn.jco.JCoField;
+import com.sap.conn.jco.JCoFieldIterator;
+import com.sap.conn.jco.JCoFunction;
+import com.sap.conn.jco.JCoParameterList;
+import com.sap.conn.jco.JCoRecordFieldIterator;
+import com.sap.conn.jco.JCoStructure;
+import com.sap.conn.jco.JCoTable;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -117,8 +125,16 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
                           }
                         });
               });
-
-      connectionManager.executeFuction(function);
+      if(template.getCredentials() == null){
+        connectionManager.executeFuction(function);
+      } else {
+          String user = template.getCredentials().get("user");
+          String password = template.getCredentials().get("password");
+          if(Strings.isNotEmpty(user) && Strings.isNotBlank(user) && Strings.isNotEmpty(password) && Strings.isNotBlank(password))
+             connectionManager.executeFuction(function, user, password);
+          else
+              throw new IllegalArgumentException("Se requiere un usuario y contraseña");
+      }
       JCoFieldIterator fieldIterator =
           function.getExportParameterList() == null
               ? null
