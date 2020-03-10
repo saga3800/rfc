@@ -19,9 +19,9 @@ public class SapFunctionController {
 
   @PostMapping("/invoke")
   public List<Map<String, Object>> create(@RequestBody RemoteFunctionTemplate template,
-                                          @RequestParam(name = "tablas", required = false) List<String> tablas) {
+                                          @RequestParam(name = "tables", required = false) List<String> tables) {
 
-    RemoteFunctionTemplate result = remoteFunctionCaller.invoke(template, tablas);
+    RemoteFunctionTemplate result = remoteFunctionCaller.invoke(template, tables);
     if (result.getError() != null) {
       int index = 1;
       List<Map<String, Object>> error = new ArrayList<>();
