@@ -18,7 +18,9 @@ public class RemoteFunctionTemplate {
   private Map<String, ArrayList<Map>> tables = new HashMap<>();
   private List<Map<String, Object>> outputParamList = new ArrayList<>();
   private String functionName;
-  private String error;
+  private List<String> error;
+  private Map<String, Object> importParameterList = new HashMap<>();
+  private Map<String, String> credentials = null;
 
   public static class Builder {
 
