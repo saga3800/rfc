@@ -3,6 +3,8 @@ package com.claro.sap.rfcwrapper.rfc;
 import com.sap.conn.jco.ext.DataProviderException;
 import com.sap.conn.jco.ext.DestinationDataEventListener;
 import com.sap.conn.jco.ext.DestinationDataProvider;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Properties;
 
@@ -10,10 +12,15 @@ public class CustomDestinationProvider implements DestinationDataProvider {
 
     private String host;
     private String sysNr;
+    @Getter @Setter
     private String user;
     private String client;
+    @Setter
     private String password;
     private String lang;
+
+    @Getter
+    private DestinationDataEventListener destinationDataEventListener;
 
     public CustomDestinationProvider(String host, String sysNr, String user, String client, String password, String lang) {
         this.host = host;
@@ -40,11 +47,11 @@ public class CustomDestinationProvider implements DestinationDataProvider {
 
     @Override
     public boolean supportsEvents() {
-        return false;
+        return true;
     }
 
     @Override
     public void setDestinationDataEventListener(DestinationDataEventListener destinationDataEventListener) {
-
+        this.destinationDataEventListener = destinationDataEventListener;
     }
 }

@@ -4,14 +4,20 @@ import com.claro.sap.rfcwrapper.rfc.PoolConnectionManager;
 import com.claro.sap.rfcwrapper.rfc.RemoteFunctionCaller;
 import com.claro.sap.rfcwrapper.rfc.RemoteFunctionParamList;
 import com.claro.sap.rfcwrapper.rfc.RemoteFunctionTemplate;
-import com.sap.conn.jco.*;
+import com.sap.conn.jco.JCoException;
+import com.sap.conn.jco.JCoField;
+import com.sap.conn.jco.JCoFieldIterator;
+import com.sap.conn.jco.JCoFunction;
+import com.sap.conn.jco.JCoParameterList;
+import com.sap.conn.jco.JCoRecordFieldIterator;
+import com.sap.conn.jco.JCoStructure;
+import com.sap.conn.jco.JCoTable;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
@@ -27,10 +33,11 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
    * Invoca el RFC en SAP y retorna el resultado.
    *
    * @param template objeto que contiene el nombre y parametros del RFC a invocar.
+   * @param outputTables Nombres de las tablas de salida a retornar, "all" retorna todas.
    * @return retorna un RemoteFunctionTemplate que contiene los parametros de salida
    */
   @Override
-  public RemoteFunctionTemplate invoke(RemoteFunctionTemplate template) {
+  public RemoteFunctionTemplate invoke(RemoteFunctionTemplate template, List<String> outputTables) {
     try {
       JCoFunction function = connectionManager.getFunction(template.getFunctionName());
 
@@ -117,8 +124,16 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
                           }
                         });
               });
-
-      connectionManager.executeFuction(function);
+      if(template.getCredentials() == null){
+        connectionManager.executeFuction(function);
+      } else {
+          String user = template.getCredentials().get("user");
+          String password = template.getCredentials().get("password");
+          if(Strings.isNotEmpty(user) && Strings.isNotBlank(user) && Strings.isNotEmpty(password) && Strings.isNotBlank(password))
+             connectionManager.executeFuction(function, user, password);
+          else
+              throw new IllegalArgumentException("Se requiere un usuario y contraseña");
+      }
       JCoFieldIterator fieldIterator =
           function.getExportParameterList() == null
               ? null
@@ -155,22 +170,47 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
       }
 
       if (tables != null) {
-        tables.forEach(
-            jCoField -> {
-              if ( (jCoField.getName().startsWith("EX") || jCoField.getName().equalsIgnoreCase("RETURN")) && jCoField.getTable().getNumRows() > 0) {
-                for (int i = 0; i < jCoField.getTable().getNumRows(); i++) {
-                  JCoFieldIterator tablaDatosIterator =
-                      jCoField.getTable().getRecordFieldIterator();
-                  Map outputParams = new HashMap();
-                  while (tablaDatosIterator.hasNextField()) {
-                    JCoField field = tablaDatosIterator.nextField();
-                    outputParams.put(field.getName(), field.getValue());
-                  }
-                  template.getOutputParamList().add(outputParams);
-                  jCoField.getTable().nextRow();
-                }
-              }
-            });
+          if(!CollectionUtils.isEmpty(outputTables)){
+              boolean allTables = outputTables.contains("all");
+              Map<String, Object> tablesMap = new HashMap<>();
+              tables.forEach(
+                  jCoField -> {
+                      String tableName = jCoField.getName();
+                      if (allTables || outputTables.contains(tableName)) {
+                          JCoTable table = jCoField.getTable();
+                          List<Map<String, Object>> rows = new ArrayList<>();
+                          for (int i = 0; i < table.getNumRows(); i++) {
+                              JCoFieldIterator iterator = table.getRecordFieldIterator();
+                              Map<String, Object> fieldMap = new HashMap<>();
+                              while (iterator.hasNextField()) {
+                                  JCoField field = iterator.nextField();
+                                  fieldMap.put(field.getName(), field.getValue());
+                              }
+                              rows.add(fieldMap);
+                              table.nextRow();
+                          }
+                          tablesMap.put(tableName, rows);
+                      }
+                  });
+              template.getOutputParamList().add(tablesMap);
+          }else {
+              tables.forEach(
+                  jCoField -> {
+                      if ((jCoField.getName().startsWith("EX") || jCoField.getName().equalsIgnoreCase("RETURN")) && jCoField.getTable().getNumRows() > 0) {
+                          for (int i = 0; i < jCoField.getTable().getNumRows(); i++) {
+                              JCoFieldIterator tablaDatosIterator =
+                                      jCoField.getTable().getRecordFieldIterator();
+                              Map outputParams = new HashMap();
+                              while (tablaDatosIterator.hasNextField()) {
+                                  JCoField field = tablaDatosIterator.nextField();
+                                  outputParams.put(field.getName(), field.getValue());
+                              }
+                              template.getOutputParamList().add(outputParams);
+                              jCoField.getTable().nextRow();
+                          }
+                      }
+                  });
+          }
       }
 
       // messages output params

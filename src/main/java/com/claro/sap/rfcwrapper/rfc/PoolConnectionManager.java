@@ -1,17 +1,19 @@
 package com.claro.sap.rfcwrapper.rfc;
 
+
+
 import com.sap.conn.jco.JCoDestination;
 import com.sap.conn.jco.JCoDestinationManager;
 import com.sap.conn.jco.JCoException;
 import com.sap.conn.jco.JCoFunction;
-import com.sap.conn.jco.ext.DestinationDataProvider;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 @Component
@@ -37,9 +39,13 @@ public class PoolConnectionManager {
 
   private String ABAP_AS = "mySAPSystem";
 
+  private CustomDestinationProvider destinationProvider;
+
+  private Map<String, String> users = new HashMap<>();
+
   @PostConstruct
   public void init() {
-    CustomDestinationProvider destinationProvider = new CustomDestinationProvider(host,sysNr,user,client,password,lang);
+    this.destinationProvider = new CustomDestinationProvider(host,sysNr,user,client,password,lang);
     com.sap.conn.jco.ext.Environment.registerDestinationDataProvider( destinationProvider );
     /*Properties connectProperties = new Properties();
     connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, this.host);
@@ -80,6 +86,21 @@ public class PoolConnectionManager {
    */
   public void executeFuction(JCoFunction function) throws JCoException {
     function.execute(this.getDestination());
+  }
+
+  /**
+   * Ejecuta un RFC utilizando el usuario y contraseña enviados en la petición
+   * @param function función a ejecutar
+   * @param user usuario para autenticación
+   * @param password contraseña de autentciación
+   * @throws JCoException en caso de error
+   */
+  public void executeFuction(JCoFunction function, String user, String password) throws JCoException {
+    destinationProvider.setUser(user);
+    destinationProvider.setPassword(password);
+    destinationProvider.getDestinationDataEventListener().updated(user);
+    JCoDestination destination = JCoDestinationManager.getDestination(user);
+    function.execute(destination);
   }
 
   /**
