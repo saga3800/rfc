@@ -269,7 +269,7 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
               }
           }
           if(!fetched)
-              tryAddErrorUsingTraditionalMethod(jCoField, template); //Se intenga hacer un segundo intengo para traer la información
+              tryAddErrorUsingTraditionalMethod(jCoField, template); //Se hace un segundo intento para traer la información
       }
   }
 
