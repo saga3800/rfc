@@ -5,6 +5,7 @@ import com.claro.sap.rfcwrapper.rfc.RemoteFunctionCaller;
 import com.claro.sap.rfcwrapper.rfc.RemoteFunctionParamList;
 import com.claro.sap.rfcwrapper.rfc.RemoteFunctionTemplate;
 import com.claro.sap.rfcwrapper.utils.XmlUtils;
+import com.claro.sap.rfcwrapper.validation.PreConditions;
 import com.sap.conn.jco.JCoException;
 import com.sap.conn.jco.JCoField;
 import com.sap.conn.jco.JCoFieldIterator;
@@ -46,6 +47,7 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
   @Override
   public RemoteFunctionTemplate invoke(RemoteFunctionTemplate template, List<String> outputTables) {
     try {
+        PreConditions.execute(template);
       JCoFunction function = connectionManager.getFunction(template.getFunctionName());
 
       // set simple input params
