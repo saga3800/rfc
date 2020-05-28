@@ -1,5 +1,6 @@
 package com.claro.sap.rfcwrapper.services;
 
+import com.claro.sap.rfcwrapper.exception.AuthenticationException;
 import com.claro.sap.rfcwrapper.rfc.PoolConnectionManager;
 import com.claro.sap.rfcwrapper.rfc.RemoteFunctionCaller;
 import com.claro.sap.rfcwrapper.rfc.RemoteFunctionParamList;
@@ -233,8 +234,13 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
       }*/
 
     } catch (JCoException e) {
-      e.printStackTrace();
-      template.setError(manageError(e));
+        e.printStackTrace();
+        template.setError(manageError(e));
+        if (e.getMessage() != null) {
+            if (e.getMessage().contains("Nombre o clave de acceso incorrectos")) {
+                throw new AuthenticationException(e.getMessage());
+            }
+        }
     }
     return template;
   }

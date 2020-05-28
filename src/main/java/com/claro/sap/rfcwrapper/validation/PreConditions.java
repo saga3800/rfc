@@ -1,6 +1,7 @@
 package com.claro.sap.rfcwrapper.validation;
 
 import com.claro.sap.rfcwrapper.constans.Origin;
+import com.claro.sap.rfcwrapper.exception.AuthenticationException;
 import com.claro.sap.rfcwrapper.rfc.RemoteFunctionTemplate;
 import org.apache.logging.log4j.util.Strings;
 
@@ -22,9 +23,9 @@ public final class PreConditions {
                 String user = template.getCredentials().get("user");
                 String password = template.getCredentials().get("password");
                 if (!Strings.isNotEmpty(user) || !Strings.isNotBlank(user) || !Strings.isNotEmpty(password) || !Strings.isNotBlank(password))
-                    throw new IllegalArgumentException("Se requiere un usuario y contraseña");
+                    throw new AuthenticationException("Se requiere un usuario y contraseña");
             } else {
-                throw new IllegalArgumentException("Se requiere un usuario y contraseña");
+                throw new AuthenticationException("Se requiere un usuario y contraseña");
             }
         }
     }
