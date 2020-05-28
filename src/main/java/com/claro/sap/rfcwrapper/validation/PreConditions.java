@@ -23,9 +23,9 @@ public final class PreConditions {
                 String user = template.getCredentials().get("user");
                 String password = template.getCredentials().get("password");
                 if (!Strings.isNotEmpty(user) || !Strings.isNotBlank(user) || !Strings.isNotEmpty(password) || !Strings.isNotBlank(password))
-                    throw new AuthenticationException("Se requiere un usuario y contraseña");
+                    throw new AuthenticationException("Username and password are required");
             } else {
-                throw new AuthenticationException("Se requiere un usuario y contraseña");
+                throw new AuthenticationException("Username and password are required");
             }
         }
     }
