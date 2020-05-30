@@ -42,6 +42,9 @@ public class CustomDestinationProvider implements DestinationDataProvider {
         connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, this.password);
         connectProperties.setProperty(DestinationDataProvider.JCO_LANG, this.lang);
         connectProperties.setProperty(DestinationDataProvider.JCO_POOL_CAPACITY, "10");
+        connectProperties.setProperty(DestinationDataProvider.JCO_PEAK_LIMIT, "10");
+        connectProperties.setProperty(DestinationDataProvider.JCO_EXPIRATION_TIME, "30000");
+        connectProperties.setProperty(DestinationDataProvider.JCO_EXPIRATION_PERIOD, "15000");
         return connectProperties;
     }
 

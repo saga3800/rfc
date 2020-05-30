@@ -21,6 +21,7 @@ public class RemoteFunctionTemplate {
   private List<String> error;
   private Map<String, Object> importParameterList = new HashMap<>();
   private Map<String, String> credentials = null;
+  private String origin;
 
   public static class Builder {
 
