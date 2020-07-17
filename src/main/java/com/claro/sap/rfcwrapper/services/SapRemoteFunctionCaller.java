@@ -173,14 +173,37 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
 
         // validar is es tabla
         if (field.isTable()) {
-          JCoTable tableField = field.getTable();
-          JCoRecordFieldIterator subIterator = tableField.getRecordFieldIterator();
+            JCoTable tableField = field.getTable();
+            String tableName = field.getName();
+            List<Map<String, Object>> rows = new ArrayList<>();
+          
+            for (int i = 0; i < tableField.getNumRows(); i++) {
+                JCoFieldIterator iterator = tableField.getRecordFieldIterator();
+                Map<String, Object> fieldMap = new HashMap<>();
+              
+                while (iterator.hasNextField()) {
+                    JCoField field2 = iterator.nextField();
+                    if (field2.getValue() != null && !field2.getValue().toString().isEmpty()) {
+                        fieldMap.put(field2.getName(), field2.getValue());
+                    }
+                }
+
+                rows.add(fieldMap);
+                tableField.nextRow();
+            }
+
+            data.put(tableName, rows);
+
+          /* COMENTADO NO MUESTRA TODOS LOS MENSAJES RESPUESTA
+          JCoRecordFieldIterator subIterator = tableField.getRecordFieldIterator();          
+          
           while (subIterator != null && subIterator.hasNextField()) {
               JCoField subField = subIterator.nextField();
               if (subField.isTable() && subField.getValue() != null && !subField.getValue().toString().isEmpty()) {
                   data.put(subField.getName(), subField.getValue());
               }
           }
+          */
 
         } else {
           if (field.getValue() != null && !field.getValue().toString().isEmpty()) {
@@ -269,7 +292,7 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
   }
 
   private void tryAddErrorInfo(JCoField jCoField, RemoteFunctionTemplate template) {
-      if ((jCoField.getName().startsWith("EX") || jCoField.getName().equalsIgnoreCase("RETURN")) && jCoField.getTable().getNumRows() > 0) {
+      if ((jCoField.getName().startsWith("EX") || jCoField.getName().startsWith("TI") || jCoField.getName().equalsIgnoreCase("RETURN")) && jCoField.getTable().getNumRows() > 0) {
           boolean fetched = false;
           Optional<Document> optionalXmlData = XmlUtils.fromString(jCoField.getTable().toXML()); //Se inicia el procesamiento a través de XML
           if (optionalXmlData.isPresent()) {
