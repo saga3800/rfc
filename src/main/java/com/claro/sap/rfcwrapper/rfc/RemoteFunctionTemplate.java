@@ -2,6 +2,7 @@ package com.claro.sap.rfcwrapper.rfc;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
+@ToString
 public class RemoteFunctionTemplate {
 
   private Map<String, Object> simpleParams = new HashMap<>();
