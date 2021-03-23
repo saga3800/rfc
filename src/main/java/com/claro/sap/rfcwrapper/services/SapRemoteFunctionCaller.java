@@ -50,6 +50,43 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
     try {
         PreConditions.execute(template);
       JCoFunction function = connectionManager.getFunction(template.getFunctionName());
+      
+		System.out.println("Function: " + function.getName());
+		if (function.getImportParameterList() != null) {
+			System.out.println("\tImportParameterList:");
+			for (JCoField field : function.getImportParameterList()) {
+				System.out.println("\t\tField: " + field.getName() + " -> " + field.getClassNameOfValue());
+			}
+		} else {
+			System.out.println("\tImportParameterList is null!");
+		}
+		
+		if (function.getExportParameterList() != null) {
+			System.out.println("\tExportParameterList:");
+			for (JCoField field : function.getExportParameterList()) {
+				System.out.println("\t\tField: " + field.getName() + " -> " + field.getClassNameOfValue());
+			}
+		} else {
+			System.out.println("\tExportParameterList is null!");
+		}
+		
+		if (function.getTableParameterList() != null) {
+			System.out.println("\tTableParameterList:");
+			for (JCoField field : function.getTableParameterList()) {
+				System.out.println("\t\tField: " + field.getName() + " -> " + field.getClassNameOfValue());
+			}
+		} else {
+			System.out.println("\tTableParameterList is null!");
+		}
+		
+		if (function.getChangingParameterList() != null) {
+			System.out.println("\tChangingParameterList:");
+			for (JCoField field : function.getChangingParameterList()) {
+				System.out.println("\t\tField: " + field.getName() + " -> " + field.getClassNameOfValue());
+			}
+		} else {
+			System.out.println("\tChangingParameterList is null!");
+		}
 
       // set simple input params
       template.getSimpleParams().entrySet().stream()
