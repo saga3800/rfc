@@ -85,6 +85,7 @@ public class PoolConnectionManager {
    * @throws JCoException
    */
   public void executeFuction(JCoFunction function) throws JCoException {
+    this.getDestination().ping();
     function.execute(this.getDestination());
   }
 
@@ -100,6 +101,7 @@ public class PoolConnectionManager {
     destinationProvider.setPassword(password);
     destinationProvider.getDestinationDataEventListener().updated(user);
     JCoDestination destination = JCoDestinationManager.getDestination(user);
+    destination.ping();
     function.execute(destination);
   }
 

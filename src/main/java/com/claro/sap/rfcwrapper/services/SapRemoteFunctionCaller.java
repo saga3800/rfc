@@ -1,9 +1,12 @@
 package com.claro.sap.rfcwrapper.services;
 
+import com.claro.sap.rfcwrapper.exception.AuthenticationException;
 import com.claro.sap.rfcwrapper.rfc.PoolConnectionManager;
 import com.claro.sap.rfcwrapper.rfc.RemoteFunctionCaller;
 import com.claro.sap.rfcwrapper.rfc.RemoteFunctionParamList;
 import com.claro.sap.rfcwrapper.rfc.RemoteFunctionTemplate;
+import com.claro.sap.rfcwrapper.utils.XmlUtils;
+import com.claro.sap.rfcwrapper.validation.PreConditions;
 import com.sap.conn.jco.JCoException;
 import com.sap.conn.jco.JCoField;
 import com.sap.conn.jco.JCoFieldIterator;
@@ -16,8 +19,14 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
@@ -39,6 +48,7 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
   @Override
   public RemoteFunctionTemplate invoke(RemoteFunctionTemplate template, List<String> outputTables) {
     try {
+        PreConditions.execute(template);
       JCoFunction function = connectionManager.getFunction(template.getFunctionName());
 
       // set simple input params
@@ -92,37 +102,50 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
               stringObjectEntry -> {
                 JCoTable table =
                     function.getImportParameterList().getTable(stringObjectEntry.getKey());
-                table.appendRow();
-                Map<String, Object> mapProperties =
-                    (Map<String, Object>) stringObjectEntry.getValue();
-                mapProperties
-                    .entrySet()
-                    .forEach(
-                        stringObjectEntry1 -> {
-                          if (stringObjectEntry1.getValue() instanceof ArrayList) {
-                            JCoTable subTable =
-                                table.getTable(stringObjectEntry1.getKey().toString());
+                if(stringObjectEntry.getValue() instanceof List) {
+                    ((List) stringObjectEntry.getValue()).forEach( item -> {
+                        table.appendRow();
+                        ((Map<String, Object>) item).entrySet()
+                                .forEach(
+                                        stringObjectEntry2 -> {
+                                            table.setValue(
+                                                    stringObjectEntry2.getKey(),
+                                                    stringObjectEntry2.getValue());
+                                        });
+                    });
+                } else {
+                    table.appendRow();
+                    Map<String, Object> mapProperties =
+                            (Map<String, Object>) stringObjectEntry.getValue();
+                    mapProperties
+                            .entrySet()
+                            .forEach(
+                                    stringObjectEntry1 -> {
+                                        if (stringObjectEntry1.getValue() instanceof ArrayList) {
+                                            JCoTable subTable =
+                                                    table.getTable(stringObjectEntry1.getKey().toString());
 
-                            List<Map<String, Object>> subTablePropertiesMap =
-                                (List<Map<String, Object>>) stringObjectEntry1.getValue();
-                            subTablePropertiesMap.forEach(
-                                seriales -> {
-                                  subTable.appendRow();
-                                  seriales
-                                      .entrySet()
-                                      .forEach(
-                                          stringObjectEntry2 -> {
-                                            subTable.setValue(
-                                                stringObjectEntry2.getKey(),
-                                                stringObjectEntry2.getValue());
-                                          });
-                                });
+                                            List<Map<String, Object>> subTablePropertiesMap =
+                                                    (List<Map<String, Object>>) stringObjectEntry1.getValue();
+                                            subTablePropertiesMap.forEach(
+                                                    seriales -> {
+                                                        subTable.appendRow();
+                                                        seriales
+                                                                .entrySet()
+                                                                .forEach(
+                                                                        stringObjectEntry2 -> {
+                                                                            subTable.setValue(
+                                                                                    stringObjectEntry2.getKey(),
+                                                                                    stringObjectEntry2.getValue());
+                                                                        });
+                                                    });
 
-                          } else {
-                            table.setValue(
-                                stringObjectEntry1.getKey(), stringObjectEntry1.getValue());
-                          }
-                        });
+                                        } else {
+                                            table.setValue(
+                                                    stringObjectEntry1.getKey(), stringObjectEntry1.getValue());
+                                        }
+                                    });
+                }
               });
       if(template.getCredentials() == null){
         connectionManager.executeFuction(function);
@@ -157,14 +180,37 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
 
         // validar is es tabla
         if (field.isTable()) {
-          JCoTable tableField = field.getTable();
-          JCoRecordFieldIterator subIterator = tableField.getRecordFieldIterator();
+            JCoTable tableField = field.getTable();
+            String tableName = field.getName();
+            List<Map<String, Object>> rows = new ArrayList<>();
+          
+            for (int i = 0; i < tableField.getNumRows(); i++) {
+                JCoFieldIterator iterator = tableField.getRecordFieldIterator();
+                Map<String, Object> fieldMap = new HashMap<>();
+              
+                while (iterator.hasNextField()) {
+                    JCoField field2 = iterator.nextField();
+                    if (field2.getValue() != null && !field2.getValue().toString().isEmpty()) {
+                        fieldMap.put(field2.getName(), field2.getValue());
+                    }
+                }
+
+                rows.add(fieldMap);
+                tableField.nextRow();
+            }
+
+            data.put(tableName, rows);
+
+          /* COMENTADO NO MUESTRA TODOS LOS MENSAJES RESPUESTA
+          JCoRecordFieldIterator subIterator = tableField.getRecordFieldIterator();          
+          
           while (subIterator != null && subIterator.hasNextField()) {
               JCoField subField = subIterator.nextField();
-              if (subField.getValue() != null && !subField.getValue().toString().isEmpty()) {
+              if (subField.isTable() && subField.getValue() != null && !subField.getValue().toString().isEmpty()) {
                   data.put(subField.getName(), subField.getValue());
               }
           }
+          */
 
         } else {
           if (field.getValue() != null && !field.getValue().toString().isEmpty()) {
@@ -201,22 +247,7 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
                   });
               template.getOutputParamList().add(tablesMap);
           }else {
-              tables.forEach(
-                  jCoField -> {
-                      if ((jCoField.getName().startsWith("EX") || jCoField.getName().equalsIgnoreCase("RETURN")) && jCoField.getTable().getNumRows() > 0) {
-                          for (int i = 0; i < jCoField.getTable().getNumRows(); i++) {
-                              JCoFieldIterator tablaDatosIterator =
-                                      jCoField.getTable().getRecordFieldIterator();
-                              Map outputParams = new HashMap();
-                              while (tablaDatosIterator.hasNextField()) {
-                                  JCoField field = tablaDatosIterator.nextField();
-                                  outputParams.put(field.getName(), field.getValue());
-                              }
-                              template.getOutputParamList().add(outputParams);
-                              jCoField.getTable().nextRow();
-                          }
-                      }
-                  });
+              tables.forEach(jCoField -> tryAddErrorInfo(jCoField, template));
           }
       }
 
@@ -245,14 +276,19 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
         template.getOutputParamList().add(data);
       }*/
 
-    } catch (JCoException e) {
-      e.printStackTrace();
-      template.setError(manageError(e));
+    } catch (Throwable e) {
+        e.printStackTrace();
+        template.setError(manageError(e));
+        if (e.getMessage() != null) {
+            if (e.getMessage().contains("Nombre o clave de acceso incorrectos")) {
+                throw new AuthenticationException(e.getMessage());
+            }
+        }
     }
     return template;
   }
 
-  private List<String> manageError (JCoException e){
+  private List<String> manageError (Throwable e){
       List<String> errors = new ArrayList<>();
       Throwable exception = e;
       while (exception != null){
@@ -260,5 +296,45 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
           exception = exception.getCause();
       }
       return errors;
+  }
+
+  private void tryAddErrorInfo(JCoField jCoField, RemoteFunctionTemplate template) {
+      if ((jCoField.getName().startsWith("EX") || jCoField.getName().startsWith("TI") || jCoField.getName().equalsIgnoreCase("RETURN")) && jCoField.getTable().getNumRows() > 0) {
+          boolean fetched = false;
+          Optional<Document> optionalXmlData = XmlUtils.fromString(jCoField.getTable().toXML()); //Se inicia el procesamiento a través de XML
+          if (optionalXmlData.isPresent()) {
+              try {
+                  Document xmlData = optionalXmlData.get();
+                  NodeList nodeList = xmlData.getElementsByTagName("item"); //La información viene en un tag de segundo nivel llamado item
+                  for (int i = 0; i < nodeList.getLength(); i++) {
+                      Map outputParams = new HashMap();
+                      NodeList response = nodeList.item(i).getChildNodes();
+                      for (int j = 0; j < response.getLength(); j++) {
+                          outputParams.put(response.item(j).getNodeName(), response.item(j).getTextContent());
+                          fetched = true;
+                      }
+                      template.getOutputParamList().add(outputParams);
+                  }
+              } catch (Exception e) {
+                  e.printStackTrace();
+              }
+          }
+          if(!fetched)
+              tryAddErrorUsingTraditionalMethod(jCoField, template); //Se hace un segundo intento para traer la información
+      }
+  }
+
+  private void tryAddErrorUsingTraditionalMethod(JCoField jCoField, RemoteFunctionTemplate template) {
+      for (int i = 0; i < jCoField.getTable().getNumRows(); i++) {
+          Map outputParams = new HashMap();
+          JCoFieldIterator tablaDatosIterator =
+                  jCoField.getTable().getRecordFieldIterator();
+          while (tablaDatosIterator.hasNextField()) {
+              JCoField field = tablaDatosIterator.nextField();
+              outputParams.put(field.getName(), field.getValue());
+          }
+          template.getOutputParamList().add(outputParams);
+          jCoField.getTable().nextRow();
+      }
   }
 }
