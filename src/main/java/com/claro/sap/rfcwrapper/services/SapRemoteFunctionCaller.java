@@ -243,6 +243,10 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
               tables.forEach(jCoField -> tryAddErrorInfo(jCoField, template));
           }
       }
+      // se imprime el template de retorno y funtion de consumo de SAP
+      System.out.println("Template Consumo RFC >>> "+ template.toString());
+      System.out.println("  =======================================   =======================================  ");
+      System.out.println("Function >>> "+ function.toString());
 
       // messages output params
       /*
