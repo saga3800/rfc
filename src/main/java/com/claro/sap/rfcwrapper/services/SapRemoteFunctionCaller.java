@@ -309,37 +309,47 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
       // Verificacion de la tabla ORDER_FLOWS_OUT - BAPI
       if (jCoField.getName().equals("ORDER_FLOWS_OUT")){
           JCoTable tableFlow =  jCoField.getTable();
-          // iteracion de filas
-          for (int j = tableFlow.getNumRows(); j >= 0 ; j--) {
-              tableFlow.setRow(j);
-              JCoRecordFieldIterator itTabFlow = tableFlow.getRecordFieldIterator();
-              String numeroFactura = "";
-              String numeroPedidoSAP =  "";
 
-              // iteracion de campos
-              while (itTabFlow.hasNextField()) {
-                  JCoRecordField fieldBapi = itTabFlow.nextRecordField();
+          if (tableFlow.getNumRows() > 0) {
+              // iteracion de filas
+              outerloop:
+              for (int j = tableFlow.getNumRows(); j >= 0; j--) {
+                  tableFlow.setRow(j);
+                  JCoRecordFieldIterator itTabFlow = tableFlow.getRecordFieldIterator();
+                  String numeroFactura = "";
+                  String numeroPedidoSAP = "";
 
-                  // asignacion de numero de factura
-                  if (fieldBapi.getName().equals("SUBSSDDOC"))
-                      numeroFactura = fieldBapi.getString() ;
-                  // asignacion de numero de pedido SAP
-                  if (fieldBapi.getName().equals("SD_DOC"))
-                      numeroPedidoSAP =  fieldBapi.getString();
+                  // iteracion de campos
+                  while (itTabFlow.hasNextField()) {
+                      JCoRecordField fieldBapi = itTabFlow.nextRecordField();
 
+                      // asignacion de numero de factura
+                      if (fieldBapi.getName().equals("SUBSSDDOC"))
+                          numeroFactura = fieldBapi.getString();
+                      // asignacion de numero de pedido SAP
+                      if (fieldBapi.getName().equals("SD_DOC"))
+                          numeroPedidoSAP = fieldBapi.getString();
 
-                  // validacion del tipo de documento
-                  if (fieldBapi.getName().equals("DOCCATEGOR") && fieldBapi.getValue().equals("M")){
-                      Map outputParams = new HashMap();
-                      outputParams.put("NUMERO_PEDIDO", numeroPedidoSAP);
-                      outputParams.put("NUMERO_FACTURA", numeroFactura);
+                      // validacion del tipo de documento
+                      if (fieldBapi.getName().equals("DOCCATEGOR") && fieldBapi.getValue().equals("M")) {
+                          Map outputParams = new HashMap();
+                          outputParams.put("NUMERO_PEDIDO", numeroPedidoSAP);
+                          outputParams.put("NUMERO_FACTURA", numeroFactura);
 
-                      // Mapeo para retorno de valores
-                      template.getOutputParamList().clear();
-                      template.getOutputParamList().add(outputParams);
-                      break;
+                          // Mapeo para retorno de valores
+                          template.getOutputParamList().clear();
+                          template.getOutputParamList().add(outputParams);
+                          break outerloop;
+                      }
                   }
               }
+          } else {
+              String numeroPedido = template.getOutputParamList().get(0).get("VALUEPART1").toString().split(" ")[0];
+              // Se mapea error de NO factura
+              Map outputError = new HashMap();
+              outputError.put("Error","No se encontro factura para el numero de pedido "+ numeroPedido);
+              template.getOutputParamList().clear();
+              template.getOutputParamList().add(outputError);
           }
       }
 
