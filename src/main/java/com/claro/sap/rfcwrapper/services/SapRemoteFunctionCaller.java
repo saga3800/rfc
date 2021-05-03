@@ -142,7 +142,14 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
           String user = template.getCredentials().get("user");
           String password = template.getCredentials().get("password");
           if(Strings.isNotEmpty(user) && Strings.isNotBlank(user) && Strings.isNotEmpty(password) && Strings.isNotBlank(password))
-             connectionManager.executeFuction(function, user, password);
+              // Inicio Temporal error eCommerce usuario sin permisos, por defecto dejar CO_WDIGITAL
+              if (user.equalsIgnoreCase("CO_WTIENDAV")) {
+                connectionManager.executeFuction(function);            
+              } else {
+                connectionManager.executeFuction(function, user, password);
+              } 
+              // Fin Temporal
+              //connectionManager.executeFuction(function, user, password);
           else
               throw new IllegalArgumentException("Se requiere un usuario y contraseña");
       }
