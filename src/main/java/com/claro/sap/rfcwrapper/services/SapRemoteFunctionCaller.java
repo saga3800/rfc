@@ -325,7 +325,7 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
               BigDecimal precioFactura = new BigDecimal(0);
               String fechaFactura = "";
 
-              for (int j =0 ; j <= tableFlow.getNumRows(); j++) {
+              for (int j =0 ; j < tableFlow.getNumRows(); j++) {
                   tableFlow.setRow(j);
                   JCoRecordFieldIterator itTabFlow = tableFlow.getRecordFieldIterator();
                   String SUBSSDDOC = "";
@@ -336,7 +336,6 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
 
                   // iteracion de campos
                   while (itTabFlow.hasNextField()) {
-
                       JCoRecordField fieldBapi = itTabFlow.nextRecordField();
                       // asignacion de numero de factura
                       if (fieldBapi.getName().equals("SUBSSDDOC"))
@@ -357,6 +356,7 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
                       if (fieldBapi.getName().equals("REC_TIME"))
                           FECHACONT += fieldBapi.getString();
                   }
+
                   // Es esl documento  de la factura
                   if(DOCCATEGOR.equals("M")){
                       numeroFactura = SUBSSDDOC;
