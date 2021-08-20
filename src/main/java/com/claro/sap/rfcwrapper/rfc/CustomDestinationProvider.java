@@ -35,7 +35,7 @@ public class CustomDestinationProvider implements DestinationDataProvider {
     @Override
     public Properties getDestinationProperties(String s) throws DataProviderException {
         Properties connectProperties = new Properties();
-        connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, this.host);
+        connectProperties.setProperty(DestinationDataProvider.JCO_MSHOST, this.host);
         connectProperties.setProperty(DestinationDataProvider.JCO_SYSNR, this.sysNr);
         connectProperties.setProperty(DestinationDataProvider.JCO_CLIENT, this.client);
         connectProperties.setProperty(DestinationDataProvider.JCO_USER, this.user);
