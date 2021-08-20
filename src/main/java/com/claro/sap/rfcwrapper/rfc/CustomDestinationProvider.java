@@ -45,6 +45,8 @@ public class CustomDestinationProvider implements DestinationDataProvider {
         connectProperties.setProperty(DestinationDataProvider.JCO_PEAK_LIMIT, "10");
         connectProperties.setProperty(DestinationDataProvider.JCO_EXPIRATION_TIME, "30000");
         connectProperties.setProperty(DestinationDataProvider.JCO_EXPIRATION_PERIOD, "15000");
+        connectProperties.setProperty(DestinationDataProvider.JCO_GROUP, "ANDINA_COPA2");
+        connectProperties.setProperty(DestinationDataProvider.JCO_MSSERV, "3600");
         return connectProperties;
     }
 
