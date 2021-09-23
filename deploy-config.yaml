@@ -229,7 +229,3 @@ parameters:
   displayName: Lang
   description: Lang.
   value: #{Template.Lang}#
-- name: CLUSTER_IP
-  displayName: Cluster ip
-  description: Cluster ip.
-  value: "#{Template.ClusterIp}#"
