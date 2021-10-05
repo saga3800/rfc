@@ -7,14 +7,7 @@ import com.claro.sap.rfcwrapper.rfc.RemoteFunctionParamList;
 import com.claro.sap.rfcwrapper.rfc.RemoteFunctionTemplate;
 import com.claro.sap.rfcwrapper.utils.XmlUtils;
 import com.claro.sap.rfcwrapper.validation.PreConditions;
-import com.sap.conn.jco.JCoException;
-import com.sap.conn.jco.JCoField;
-import com.sap.conn.jco.JCoFieldIterator;
-import com.sap.conn.jco.JCoFunction;
-import com.sap.conn.jco.JCoParameterList;
-import com.sap.conn.jco.JCoRecordFieldIterator;
-import com.sap.conn.jco.JCoStructure;
-import com.sap.conn.jco.JCoTable;
+import com.sap.conn.jco.*;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,11 +15,8 @@ import org.springframework.util.CollectionUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.math.BigDecimal;
+import java.util.*;
 
 @Service
 public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
@@ -175,9 +165,9 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
 
       // simple output parameters
       Map data = new HashMap();
+
       while (fieldIterator != null && fieldIterator.hasNextField()) {
         JCoField field = fieldIterator.nextField();
-
         // validar is es tabla
         if (field.isTable()) {
             JCoTable tableField = field.getTable();
@@ -247,6 +237,7 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
                   });
               template.getOutputParamList().add(tablesMap);
           }else {
+
               tables.forEach(jCoField -> tryAddErrorInfo(jCoField, template));
           }
       }
@@ -299,6 +290,7 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
   }
 
   private void tryAddErrorInfo(JCoField jCoField, RemoteFunctionTemplate template) {
+
       if ((jCoField.getName().startsWith("EX") || jCoField.getName().startsWith("TI") || jCoField.getName().equalsIgnoreCase("RETURN")) && jCoField.getTable().getNumRows() > 0) {
           boolean fetched = false;
           Optional<Document> optionalXmlData = XmlUtils.fromString(jCoField.getTable().toXML()); //Se inicia el procesamiento a través de XML
@@ -322,7 +314,80 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
           if(!fetched)
               tryAddErrorUsingTraditionalMethod(jCoField, template); //Se hace un segundo intento para traer la información
       }
+      // Verificacion de la tabla ORDER_FLOWS_OUT - BAPI
+      if (jCoField.getName().equals("ORDER_FLOWS_OUT")){
+          JCoTable tableFlow =  jCoField.getTable();
+
+          if (tableFlow.getNumRows() > 0) {
+              // iteracion de filas
+              String numeroFactura = "";
+              String numeroPedidoSAP = "";
+              BigDecimal precioFactura = new BigDecimal(0);
+              String fechaFactura = "";
+
+              for (int j =0 ; j < tableFlow.getNumRows(); j++) {
+                  tableFlow.setRow(j);
+                  JCoRecordFieldIterator itTabFlow = tableFlow.getRecordFieldIterator();
+                  String SUBSSDDOC = "";
+                  String SD_DOC = "";
+                  String DOCCATEGOR = "";
+                  BigDecimal REFERENVAL = new BigDecimal(0);
+                  String FECHACONT = "";
+
+                  // iteracion de campos
+                  while (itTabFlow.hasNextField()) {
+                      JCoRecordField fieldBapi = itTabFlow.nextRecordField();
+                      // asignacion de numero de factura
+                      if (fieldBapi.getName().equals("SUBSSDDOC"))
+                          SUBSSDDOC = fieldBapi.getString();
+                      // asignacion de numero de pedido SAP
+                      if (fieldBapi.getName().equals("SD_DOC"))
+                          SD_DOC = fieldBapi.getString();
+                      // asignacion de tipo de documento
+                      if (fieldBapi.getName().equals("DOCCATEGOR"))
+                          DOCCATEGOR = fieldBapi.getString();
+                      // asignacion de tipo de documento
+                      if (fieldBapi.getName().equals("REFERENVAL"))
+                          REFERENVAL = new BigDecimal(fieldBapi.getString());
+                      // asignacion de tipo de documento
+                      if (fieldBapi.getName().equals("CREAT_DATE"))
+                          FECHACONT = fieldBapi.getString()+" ";
+                      // asignacion de tipo de documento
+                      if (fieldBapi.getName().equals("REC_TIME"))
+                          FECHACONT += fieldBapi.getString();
+                  }
+
+                  // Es esl documento  de la factura
+                  if(DOCCATEGOR.equals("M")){
+                      numeroFactura = SUBSSDDOC;
+                      numeroPedidoSAP = SD_DOC;
+                      precioFactura = precioFactura.add(REFERENVAL);
+                      fechaFactura = FECHACONT;
+                  }
+              }
+
+                // Mapeo para retorno de valores
+              Map outputParams = new HashMap();
+              outputParams.put("NUMERO_PEDIDO", numeroPedidoSAP);
+              outputParams.put("NUMERO_FACTURA", numeroFactura);
+              outputParams.put("PRECIO_FACTURA", precioFactura);
+              outputParams.put("FECHA_FACTURA", fechaFactura);
+              template.getOutputParamList().clear();
+              template.getOutputParamList().add(outputParams);
+
+              }
+          else {
+                  String numeroPedido = template.getOutputParamList().get(0).get("VALUEPART1").toString().split(" ")[0];
+                  // Se mapea error de NO factura
+                  Map outputError = new HashMap();
+                  outputError.put("Error","No se encontro factura para el numero de pedido "+ numeroPedido);
+                  template.getOutputParamList().clear();
+                  template.getOutputParamList().add(outputError);
+              }
+          }
   }
+
+
 
   private void tryAddErrorUsingTraditionalMethod(JCoField jCoField, RemoteFunctionTemplate template) {
       for (int i = 0; i < jCoField.getTable().getNumRows(); i++) {
@@ -337,4 +402,5 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
           jCoField.getTable().nextRow();
       }
   }
+
 }

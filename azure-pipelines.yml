@@ -9,7 +9,7 @@ trigger:
 jobs:
 - job: 'Continuous_Integration'
   pool:
-      #name: 'OCP Ubuntu 1604'
+      #name: 'ARO_Agent'
       vmImage: ubuntu-latest
   steps:
   - task: Maven@3
