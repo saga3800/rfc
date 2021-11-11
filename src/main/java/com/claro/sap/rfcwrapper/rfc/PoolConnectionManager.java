@@ -19,22 +19,22 @@ import java.util.Properties;
 @Component
 public class PoolConnectionManager {
 
-  @Value("${sap.datasource.sysnr}")
+  @Value("00")
   private String sysNr;
 
-  @Value("${sap.datasource.host}")
+  @Value("172.19.139.35")
   private String host;
 
-  @Value("${sap.datasource.client}")
+  @Value("300")
   private String client;
 
-  @Value("${sap.datasource.user}")
+  @Value("CO_PRUEBAS")
   private String user;
 
-  @Value("${sap.datasource.password}")
+  @Value("Bogota.16*")
   private String password;
 
-  @Value("${sap.datasource.lang}")
+  @Value("es")
   private String lang;
 
   private String ABAP_AS = "mySAPSystem";

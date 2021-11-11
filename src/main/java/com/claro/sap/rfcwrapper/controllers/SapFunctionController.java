@@ -22,6 +22,7 @@ public class SapFunctionController {
                                           @RequestParam(name = "tables", required = false) List<String> tables) {
 
     RemoteFunctionTemplate result = remoteFunctionCaller.invoke(template, tables);
+    System.out.println(result);
     if (result.getError() != null) {
       int index = 1;
       List<Map<String, Object>> error = new ArrayList<>();
