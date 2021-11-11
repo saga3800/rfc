@@ -29,8 +29,6 @@ objects:
       port: #{Template.Port}#
       protocol: TCP
       targetPort: #{Template.Port}#
-    clusterIP: ${CLUSTER_IP}
-    type: ClusterIP
     selector:
       name: "${NAME}"
 - kind: ImageStream
