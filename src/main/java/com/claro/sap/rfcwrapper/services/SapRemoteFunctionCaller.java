@@ -8,6 +8,7 @@ import com.claro.sap.rfcwrapper.rfc.RemoteFunctionTemplate;
 import com.claro.sap.rfcwrapper.utils.XmlUtils;
 import com.claro.sap.rfcwrapper.validation.PreConditions;
 import com.sap.conn.jco.*;
+import com.sap.conn.jco.rt.DefaultParameterField;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -163,7 +164,7 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
       // JCoTable tablaMsgs = function.getTableParameterList().getTable("EX_MENSAJES");
       JCoParameterList tables = function.getTableParameterList();
 
-      // simple output parameters
+        // simple output parameters
       Map data = new HashMap();
 
       while (fieldIterator != null && fieldIterator.hasNextField()) {
@@ -209,7 +210,7 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
         }
       }
       if (!data.isEmpty()) {
-        template.getOutputParamList().add(data);
+          template.getOutputParamList().add(data);
       }
 
       if (tables != null) {
@@ -239,6 +240,21 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
           }else {
 
               tables.forEach(jCoField -> tryAddErrorInfo(jCoField, template));
+          }
+      }
+
+      // BILLING DOCUMENT DETAIL
+      if (data.get("BILLINGDOCUMENTDETAIL") != null) {
+          JCoStructure struct = (JCoStructure) data.get("BILLINGDOCUMENTDETAIL");
+          JCoFieldIterator fieldIt = struct.getFieldIterator();
+
+          Map outputParams = new LinkedHashMap();
+          template.getOutputParamList().clear();
+          template.getOutputParamList().add(outputParams);
+
+          while (fieldIt.hasNextField()) {
+              JCoField field = fieldIt.nextField();
+              tryAddErrorInfo(field, template);
           }
       }
 
@@ -385,6 +401,16 @@ public class SapRemoteFunctionCaller implements RemoteFunctionCaller {
                   template.getOutputParamList().add(outputError);
               }
           }
+
+      // BILLING DOCUMENT DETAIL
+      String[] fields = new String[]{"BILLINGDOC", "BILL_TYPE", "BILLCATEG", "SD_DOC_CAT", "CURRENCY",
+                                     "CURRENCY_ISO", "ACCTSTATUS", "NET_VALUE", "TAX_VALUE", "CANCELLED"};
+
+      if (Arrays.asList(fields).contains(jCoField.getName())) {
+          template.getOutputParamList()
+             .get(0)
+             .put(jCoField.getName(), jCoField.getValue());
+      }
   }
 
 
