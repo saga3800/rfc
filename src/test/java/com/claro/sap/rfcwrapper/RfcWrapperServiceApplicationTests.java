@@ -1,4 +1,4 @@
-package com.claro.sap.rfcwrapper;
+package com.connect.sap.rfcwrapper;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

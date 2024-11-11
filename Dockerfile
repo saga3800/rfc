@@ -3,7 +3,6 @@ FROM xqdocker/ubuntu-openjdk:8
 
 WORKDIR /usr/src/app/
 # Add Maintainer Info
-LABEL maintainer="victor.h.julio.hoyos@accenture.com"
 
 # The application's jar file
 ARG JAR_FILE=target/rfc-wrapper-service-0.0.1-SNAPSHOT.jar

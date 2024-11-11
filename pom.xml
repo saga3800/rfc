@@ -8,7 +8,7 @@
         <version>2.1.6.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.claro.sap</groupId>
+    <groupId>com.connect.sap</groupId>
     <artifactId>rfc-wrapper-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>rfc-wrapper-service</name>
@@ -123,7 +123,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>libs/</classpathPrefix>
-                            <mainClass>com.claro.sap.rfcwrapper.Application</mainClass>
+                            <mainClass>com.connect.sap.rfcwrapper.Application</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -148,7 +148,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.claro.sap.rfcwrapper.Application</mainClass>
+                    <mainClass>com.connect.sap.rfcwrapper.Application</mainClass>
                     <excludeGroupIds>com.sap</excludeGroupIds>
                 </configuration>
                 <executions>
